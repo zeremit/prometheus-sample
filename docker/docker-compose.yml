@@ -1,0 +1,23 @@
+version: '2.1'
+
+networks:
+  net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.128.0.0/16
+          gateway: 192.128.0.1
+
+services:
+
+  prometheus:
+    image: prom/prometheus
+    mem_limit: 256m
+    network_mode: "host"
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "127.0.0.1:9099:9090"
+    extra_hosts:
+      - "${HOST_NAME}:${HOST_IP}"
+    command: "--config.file=/etc/prometheus/prometheus.yml --log.level=debug"
